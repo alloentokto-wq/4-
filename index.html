@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ru">
+<style>
+/* Из конспекта:
+   box-sizing напрямую не относится к Flexbox/Grid/media, поэтому здесь без пояснений по конспекту */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-main: linear-gradient(304.58deg, #f4ece1 57.1%, #fcfbf7 145.5%);
+  --text-dark: #2f2f2f;
+  --text-muted: #909090;
+  --accent: #ff7e00;
+  --white-soft: #f4ece1;
+  --shadow-main: 0 20px 32px -8px rgba(0, 0, 0, 0.2);
+  --shadow-soft: 0 20px 36px -16px rgba(0, 0, 0, 0.1);
+  --shadow-search: 0 12px 40px -16px rgba(0, 0, 0, 0.1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: #ffffff;
+  color: var(--text-dark);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  border: none;
+  background: transparent;
+  font: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 32px;
+}
+
+.hero {
+  position: relative;
+  max-width: 1511px;
+  min-height: 886px;
+  margin: 0 auto;
+  padding: 39px 65px 38px 87px;
+  background: var(--bg-main);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+/* Из конспекта: Flexbox.
+   display: flex включает flex-контейнер.
+   Это значит, что его дочерние элементы становятся flex-элементами
+   и выстраиваются по главной оси.
+   Здесь это логотип слева и блок навигации справа.
+
+   justify-content: space-between — управление по главной оси.
+   По конспекту главная ось у flex по умолчанию горизонтальная (row),
+   поэтому элементы расходятся по ширине: один к левому краю, другой к правому.
+
+   align-items: flex-start — выравнивание по поперечной оси.
+   Поперечная ось здесь вертикальная, поэтому элементы выравниваются по верхнему краю.
+
+   gap — расстояние между flex-элементами.
+   Если убрать, элементы станут ближе друг к другу. */
+.hero__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+/* Из конспекта: Flexbox.
+   Логотип — это тоже flex-контейнер.
+   Иконка и текст идут в строку.
+   align-items: center выравнивает их по поперечной оси, то есть по вертикали.
+   gap задает расстояние между иконкой и текстом. */
+.hero__brand {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 140px;
+  padding-top: 6px;
+}
+
+.hero__brand-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.hero__brand-icon img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.hero__brand-name {
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 139.8%;
+  color: #000000;
+}
+
+/* Из конспекта: Flexbox.
+   Здесь меню и блок поиска/корзины ставятся в одну строку.
+   align-items: center выравнивает их по вертикали.
+   gap дает расстояние между этими двумя крупными блоками. */
+.hero__nav-group {
+  display: flex;
+  align-items: center;
+  gap: 72px;
+  padding-top: 0;
+}
+
+/* Из конспекта: Flexbox.
+   Пункты меню выстроены в ряд.
+   align-items: center — выравнивание по поперечной оси.
+   gap — расстояние между Home, Menu, Contact, Shop. */
+.hero__nav {
+  display: flex;
+  align-items: center;
+  gap: 56px;
+}
+
+.hero__nav-link {
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 94.8%;
+  color: #000000;
+  transition: opacity 0.2s ease;
+}
+
+.hero__nav-link:hover {
+  opacity: 0.7;
+}
+
+/* Из конспекта: Flexbox.
+   В этом контейнере поиск, разделитель и корзина выстраиваются в строку.
+   align-items: center выравнивает их по вертикали.
+   gap создает интервалы между этими элементами. */
+.hero__actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: 314px;
+  min-height: 60px;
+  padding: 0 28px;
+  background: rgba(255, 249, 240, 0.1);
+  box-shadow: var(--shadow-search);
+  border-radius: 30px;
+}
+
+/* Из конспекта: Flexbox.
+   Иконка лупы и текст Search стоят в одну строку.
+   align-items: center центрирует их по поперечной оси.
+   gap — расстояние между иконкой и текстом. */
+.hero__search {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: #000000;
+}
+
+.hero__search-icon {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--text-muted);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.hero__search-icon::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 2px;
+  right: -5px;
+  bottom: -2px;
+  background: var(--text-muted);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+.hero__search-text {
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 94.8%;
+}
+
+.hero__divider {
+  width: 45px;
+  height: 0;
+  border-top: 1px solid rgba(148, 140, 140, 0.31);
+  transform: rotate(90deg);
+}
+
+.hero__cart {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.hero__cart svg {
+  width: 20px;
+  height: 20px;
+}
+
+.hero__cart-badge {
+  position: absolute;
+  top: -14px;
+  right: -17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #ec2633;
+  box-shadow: 0 2px 23px 1px rgba(255, 51, 52, 0.72);
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 94.8%;
+  color: #ffffff;
+}
+
+/* Из конспекта: Flexbox.
+   Главный контент делится на две части:
+   слева текстовый блок, справа изображение.
+   display: flex ставит их в одну строку.
+
+   justify-content: space-between — распределяет их по ширине контейнера.
+   align-items: flex-start — выравнивает по верхнему краю.
+   gap — расстояние между двумя колонками. */
+.hero__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.hero__left {
+  position: relative;
+  flex: 0 1 690px;
+  padding-top: 111px;
+}
+
+.hero__title-row {
+  position: relative;
+  width: 640px;
+  min-height: 150px;
+}
+
+.hero__title-accent {
+  margin: 0;
+  font-weight: 700;
+  font-size: 125px;
+  line-height: 94.8%;
+  letter-spacing: -0.035em;
+  color: var(--accent);
+}
+
+/* Из конспекта: Flexbox.
+   Внутри этого блока самолетик и текст Food Delivery идут в строку.
+   align-items: flex-start выравнивает их по верхнему краю.
+   gap создает расстояние между картинкой и текстом. */
+.hero__title-side {
+  position: absolute;
+  left: 255px;
+  top: 6px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.hero__plane {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin-top: -18px;
+}
+
+.hero__title-main {
+  margin: 0;
+  width: 221px;
+  font-weight: 700;
+  font-size: 52px;
+  line-height: 94.8%;
+  color: var(--text-dark);
+}
+
+.hero__description {
+  max-width: 568px;
+  margin: 26px 0 0 6px;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 138.8%;
+  color: var(--text-muted);
+}
+
+/* Из конспекта: Flexbox.
+   Кнопка Order Now и блок Watch Video стоят в строку.
+   align-items: center выравнивает их по вертикали.
+   gap — расстояние между ними. */
+.hero__cta-row {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-top: 43px;
+  margin-left: 6px;
+}
+
+/* Из конспекта: здесь используется flex уже для центрирования содержимого внутри кнопки.
+   По конспекту Flexbox хорошо подходит для центрирования.
+   justify-content: center — по главной оси.
+   align-items: center — по поперечной оси.
+   Если убрать, текст в кнопке уже не будет так удобно центрирован. */
+.hero__button--primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 188px;
+  min-height: 70px;
+  padding: 20px 24px;
+  background: var(--text-dark);
+  box-shadow: var(--shadow-main);
+  border-radius: 84px;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 94.8%;
+  color: var(--white-soft);
+}
+
+/* Из конспекта: Flexbox.
+   Круглая иконка play и текст Watch Video стоят в строку.
+   align-items: center — вертикальное выравнивание.
+   gap — интервал между ними. */
+.hero__watch {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+/* Из конспекта: снова Flexbox для центрирования.
+   Треугольник play находится по центру круга.
+   justify-content: center — центр по главной оси.
+   align-items: center — центр по поперечной оси. */
+.hero__watch-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 57px;
+  height: 57px;
+  border-radius: 50%;
+  background: #fff8f0;
+  box-shadow: var(--shadow-soft);
+  flex-shrink: 0;
+}
+
+.hero__watch-triangle {
+  width: 0;
+  height: 0;
+  margin-left: 4px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 16px solid var(--text-dark);
+}
+
+.hero__watch-text {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 94.8%;
+  color: var(--text-dark);
+}
+
+.hero__rating {
+  margin-top: 70px;
+  margin-left: 6px;
+}
+
+/* Из конспекта: Flexbox.
+   Звезды рейтинга выстраиваются в одну строку.
+   align-items: center — выравнивание по вертикали.
+   gap — расстояние между звездами. */
+.hero__stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 28px;
+  line-height: 1;
+  color: #febb41;
+}
+
+.hero__rating-text {
+  margin: 11px 0 0 5px;
+}
+
+.hero__rating-title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 139.8%;
+  color: var(--text-dark);
+}
+
+.hero__rating-subtitle {
+  margin: 0;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 139.8%;
+  color: var(--text-muted);
+}
+
+/* Из конспекта: Flexbox.
+   Правая колонка — flex-контейнер для изображения.
+   justify-content: flex-end сдвигает картинку к правому краю по главной оси.
+   align-items: flex-start выравнивает по верхнему краю по поперечной оси. */
+.hero__right {
+  flex: 0 1 750px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-top: 17px;
+}
+
+.hero__image {
+  width: 750px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Из конспекта: Media queries.
+   Здесь начинается адаптивность для экранов до 1100px.
+   По конспекту media-запросы позволяют менять стили
+   в зависимости от характеристик экрана.
+   В задании требовалось минимум два брейкпоинта —
+   один из них здесь. */
+@media (max-width: 1100px) {
+  .page {
+    padding: 20px;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 28px 28px 40px;
+  }
+
+  /* Из конспекта: при брейкпоинте контент должен перестраиваться.
+     Здесь flex-direction: column меняет главную ось:
+     элементы шапки уже идут не в строку, а в столбец.
+     То есть flex-контейнер перестраивается вертикально. */
+  .hero__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 24px;
+  }
+
+  /* Из конспекта: flex-wrap позволяет переносить элементы на новую строку.
+     Это тоже один из смыслов Flexbox — автоматическое распределение места.
+     Если места мало, блоки могут перейти ниже. */
+  .hero__nav-group {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  /* Из конспекта: flex-wrap переносит пункты меню,
+     если они уже не помещаются в одну строку. */
+  .hero__nav {
+    flex-wrap: wrap;
+    gap: 24px 32px;
+  }
+
+  .hero__actions {
+    width: 314px;
+  }
+
+  /* Из конспекта: перестройка контента на брейкпоинте.
+     Было две колонки в строку, стало расположение в столбец.
+     Это важная часть responsive-верстки. */
+  .hero__content {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    margin-top: 10px;
+  }
+
+  .hero__left {
+    width: 100%;
+    max-width: 760px;
+    padding-top: 32px;
+  }
+
+  /* Из конспекта: здесь тоже меняется направление flex-контейнера.
+     Заголовок и блок Food Delivery теперь стоят вертикально. */
+  .hero__title-row {
+    width: auto;
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Из конспекта: Flexbox сохраняется,
+     но position становится обычным, чтобы блок корректно адаптировался.
+     align-items: center — выравнивание по поперечной оси. */
+  .hero__title-side {
+    position: static;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 0;
+  }
+
+  .hero__plane {
+    width: 52px;
+    height: 52px;
+    margin-top: 0;
+  }
+
+  .hero__title-accent {
+    font-size: 92px;
+  }
+
+  .hero__title-main {
+    margin: 0;
+    max-width: none;
+    font-size: 44px;
+  }
+
+  .hero__description {
+    max-width: 100%;
+    margin-left: 0;
+    font-size: 20px;
+  }
+
+  /* Из конспекта: flex-wrap позволяет кнопкам перенестись,
+     если для них становится мало места. */
+  .hero__cta-row {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+
+  .hero__rating {
+    margin-left: 0;
+    margin-top: 48px;
+  }
+
+  /* Из конспекта: изображение теперь центрируется в контейнере
+     за счет justify-content: center. */
+  .hero__right {
+    width: 100%;
+    justify-content: center;
+    padding-top: 0;
+  }
+
+  .hero__image {
+    width: min(620px, 100%);
+  }
+}
+
+/* Из конспекта: второй media query.
+   Это второй брейкпоинт из задания — для экранов до 600px.
+   Здесь идет еще более сильная адаптация под телефон. */
+@media (max-width: 600px) {
+  .page {
+    padding: 12px;
+  }
+
+  .hero {
+    padding: 20px 16px 28px;
+    border-radius: 18px;
+  }
+
+  .hero__brand-name {
+    font-size: 28px;
+  }
+
+  /* Из конспекта: перестройка flex-контейнера в колонку для мобильной версии. */
+  .hero__nav-group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  /* Из конспекта: меню остается flex-контейнером,
+     но теперь его элементы центрируются по главной оси. */
+  .hero__nav {
+    justify-content: center;
+    gap: 16px 20px;
+  }
+
+  .hero__nav-link {
+    font-size: 18px;
+  }
+
+  /* Из конспекта: justify-content: space-between распределяет
+     поиск и корзину по ширине блока на телефоне. */
+  .hero__actions {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+
+  .hero__search-text {
+    font-size: 18px;
+  }
+
+  .hero__left {
+    padding-top: 18px;
+  }
+
+  .hero__title-row {
+    width: auto;
+  }
+
+  .hero__title-accent {
+    font-size: 64px;
+  }
+
+  .hero__title-side {
+    position: static;
+    gap: 12px;
+  }
+
+  .hero__plane {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hero__title-main {
+    font-size: 32px;
+    line-height: 100%;
+  }
+
+  .hero__description {
+    font-size: 16px;
+    line-height: 150%;
+    margin-top: 18px;
+  }
+
+  /* Из конспекта: здесь на мобильном брейкпоинте
+     меняем направление flex-контейнера на column.
+     То есть кнопки теперь идут одна под другой.
+     Это и есть перестройка контента на следующую строку/по вертикали,
+     о которой говорится в задании и в теме media queries. */
+  .hero__cta-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    margin-top: 28px;
+  }
+
+  .hero__button--primary {
+    width: 100%;
+    max-width: 240px;
+    min-height: 60px;
+    font-size: 18px;
+  }
+
+  .hero__watch-text {
+    font-size: 18px;
+  }
+
+  .hero__watch-icon {
+    width: 52px;
+    height: 52px;
+  }
+
+  .hero__rating {
+    margin-top: 36px;
+  }
+
+  .hero__stars {
+    font-size: 24px;
+  }
+
+  .hero__rating-title {
+    font-size: 16px;
+  }
+
+  .hero__rating-subtitle {
+    font-size: 16px;
+  }
+
+  .hero__image {
+    width: 100%;
+  }
+}
+</style>
+<head>
+  <meta charset="UTF-8" />
+  <!-- Из конспекта про адаптивность:
+       viewport нужен, чтобы media queries корректно работали на мобильных устройствах
+       и страница правильно подстраивалась под ширину экрана -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foo Landing Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <header class="hero__header">
+        <div class="hero__brand">
+          <div class="hero__brand-icon">
+            <img src="chef-hat (2).png" alt="Логотип Foo" />
+          </div>
+          <div class="hero__brand-name">Foo</div>
+        </div>
+
+        <div class="hero__nav-group">
+          <nav class="hero__nav">
+            <a href="#" class="hero__nav-link">Home</a>
+            <a href="#" class="hero__nav-link">Menu</a>
+            <a href="#" class="hero__nav-link">Contact</a>
+            <a href="#" class="hero__nav-link">Shop</a>
+          </nav>
+
+          <div class="hero__actions">
+            <button class="hero__search" type="button" aria-label="Поиск">
+              <span class="hero__search-icon"></span>
+              <span class="hero__search-text">Search</span>
+            </button>
+
+            <span class="hero__divider"></span>
+
+            <button class="hero__cart" type="button" aria-label="Корзина">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M7 6h14l-1.5 7.5a2 2 0 0 1-2 1.5H10a2 2 0 0 1-2-1.6L6 4H3"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="10" cy="19" r="1.8" fill="currentColor"></circle>
+                <circle cx="18" cy="19" r="1.8" fill="currentColor"></circle>
+              </svg>
+              <span class="hero__cart-badge">2</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="hero__content">
+        <div class="hero__left">
+          <div class="hero__title-row">
+            <h1 class="hero__title-accent">Fast</h1>
+
+            <div class="hero__title-side">
+              <img src="paper-plane 1.png" alt="" class="hero__plane" />
+              <h2 class="hero__title-main">Food Delivery</h2>
+            </div>
+          </div>
+
+          <p class="hero__description">
+            Sed ut perspiciatis unde omnis iste natus sit voluptatem accusantium
+            doloremque laudantium
+          </p>
+
+          <div class="hero__cta-row">
+            <a href="#" class="hero__button hero__button--primary">Order Now</a>
+
+            <a href="#" class="hero__watch" aria-label="Смотреть видео">
+              <span class="hero__watch-icon">
+                <span class="hero__watch-triangle"></span>
+              </span>
+              <span class="hero__watch-text">Watch Video</span>
+            </a>
+          </div>
+
+          <div class="hero__rating">
+            <div class="hero__stars" aria-label="5 звёзд">
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+            </div>
+            <div class="hero__rating-text">
+              <p class="hero__rating-title">5 star rating</p>
+              <p class="hero__rating-subtitle">based on 1788 reviews</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__right">
+          <img src="17372 [Converted].png" alt="Доставка еды" class="hero__image" />
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
